@@ -1,0 +1,22 @@
+{
+  "name": "mynearfood-server",
+  "version": "1.0.0",
+  "description": "mynearfood-server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://Billy@github.com/Billy-Jung/mynearfood-server.git"
+  },
+  "author": "Billy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Billy-Jung/mynearfood-server/issues"
+  },
+  "homepage": "https://github.com/Billy-Jung/mynearfood-server#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
