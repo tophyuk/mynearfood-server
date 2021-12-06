@@ -1,10 +1,15 @@
-import db from "../models";
+import db from "../models/index";
 import { createHmac } from "crypto";
+import express = require("express");
+
+const jwt = require("jsonwebtoken");
 const Users = db.Users;
 const Op = db.sequelize.Op;
 const newDate = new Date();
 
-exports.singup = async (req, res, next) => {
+const YOUR_SECRET_KEY = process.env.SECRET_KEY;
+
+exports.singup = async (req: express.Request, res: express.Response) => {
   // Create a Tutorial
   const users = {
     email: "sanghyuk1992@naver.com",
@@ -37,26 +42,73 @@ exports.singup = async (req, res, next) => {
   }
 };
 
-exports.login = async (req, res) => {
+exports.login = async (req: express.Request, res: express.Response) => {
+  // const email = req.body.email;
+  // const password = req.body.password;
   const email = "sanghyuk1992@naver.com";
-  const password = "shj8278";
-  const user = await Users.findOne({ where: { email: email } });
+  const password = "wjdtkdgur1";
+  const result = await Users.findOne({ where: { email: email } });
 
   const hashPassword = createHmac("sha256", password)
-    .update(password + user.salt)
+    .update(password + result.salt)
     .digest("hex");
 
   let condition = { where: { email: email, password: hashPassword } };
   try {
-    const user = await Users.findOne(condition);
-    res.send(user);
+    const user = await Users.findOne(condition); // 여기서부터
+    if (user.length !== 0) {
+      const token = jwt.sign(
+        {
+          email: user.email,
+        },
+        YOUR_SECRET_KEY,
+        {
+          expiresIn: "30m",
+        }
+      );
+      res.cookie("user", token);
+      res.json({
+        message: "success",
+        code: "202",
+        token,
+        user,
+      });
+    } else {
+      res.json({
+        message: "fail",
+        code: "400",
+      });
+    }
   } catch (err) {
-    res
-      .status(500)
-      .send({ message: err.message || "Retrieve all tutorials failure." });
+    res.json({
+      message: err.message,
+      code: "400",
+    });
 
     console.error(err);
   }
+};
+
+exports.findPassword = async (req, res) => {
+  const email = req.params.email;
+  const password =
+    "mynearfood" + Math.round(new Date().valueOf() * Math.random()) + "";
+
+  const responseObject = {
+    code: "200",
+    message: "success",
+  };
+  const result = await Users.findOne({ where: { email: email } });
+  const salt = result.salt;
+  const hashPassword = createHmac("sha256", password)
+    .update(password + salt)
+    .digest("hex");
+
+  await Users.update({ password: hashPassword }, { where: { email: email } })
+    .then((resultCount) => {
+      res.status().send(responseObject);
+    })
+    .catch((err) => {});
 };
 
 exports.findAll = async (req, res) => {
@@ -86,6 +138,27 @@ exports.findOne = (req, res) => {
         message: "Error select with id : " + id,
       });
     });
+};
+
+exports.verifyToken = (req, res, next) => {
+  try {
+    const clientToken = req.headers.cookie;
+    console.log("!!" + clientToken);
+    const splitToken = clientToken.split("user=");
+    console.log("Clie :", splitToken[1]);
+
+    const decoded = jwt.verify(splitToken[1], YOUR_SECRET_KEY);
+    // console.log(decoded);
+    if (decoded) {
+      res.locals.email = decoded.email;
+      res.send(res.locals.email);
+      next();
+    } else {
+      res.status(401).json({ error: "unauthorized" });
+    }
+  } catch (err) {
+    res.status(401).json({ error: "token expired" });
+  }
 };
 
 exports.update = (req, res) => {
