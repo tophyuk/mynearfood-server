@@ -3,7 +3,11 @@
     "target": "es2017",
     "module": "commonjs",
     "outDir": "dist",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "esModuleInterop": true
   },
   "exclude": ["node_modules"]
 }
