@@ -26,34 +26,42 @@ module.exports = (sequelize, Sequelize) => {
       region: {
         type: Sequelize.STRING(45),
         allowNull: true,
+        defaulteValue: "",
       },
       introduce: {
         type: Sequelize.STRING(255),
-        allowNull: false,
+        allowNull: true,
+        defaulteValue: "",
       },
       reg_date: {
         type: Sequelize.DATE,
-        allowNull: false,
+        allowNull: true,
+        defaulteValue: new Date(),
       },
       upt_date: {
         type: Sequelize.DATE,
-        allowNull: false,
+        allowNull: true,
+        defaulteValue: new Date(),
       },
       delete_yn: {
         type: Sequelize.STRING(10),
-        allowNull: false,
+        allowNull: true,
+        defaulteValue: "N",
       },
       login_type: {
         type: Sequelize.STRING(100),
-        allowNull: false,
+        allowNull: true,
+        defaulteValue: "mynear",
       },
       priviate_yn: {
         type: Sequelize.STRING(10),
-        allowNull: false,
+        allowNull: true,
+        defaulteValue: "N",
       },
       salt: {
         type: Sequelize.STRING(100),
         allowNull: false,
+        defaulteValue: "",
       },
     },
     {
