@@ -1,6 +1,7 @@
 import db from "../models/index";
 import { createHmac } from "crypto";
 import express = require("express");
+import { CODES } from "../constants/codes";
 
 const jwt = require("jsonwebtoken");
 const Users = db.Users;
@@ -10,18 +11,11 @@ const newDate = new Date();
 const YOUR_SECRET_KEY = process.env.SECRET_KEY;
 
 exports.singup = async (req: express.Request, res: express.Response) => {
-  // Create a Tutorial
   const users = {
-    email: "sanghyuk1992@naver.com",
-    nickname: "shj8278",
-    password: "shj8278",
-    region: "대구",
-    reg_date: newDate,
-    upt_date: newDate,
-    introduce: "오늘도 피곤해",
-    delete_yn: "N",
-    login_type: "mynear",
-    priviate_yn: "Y",
+    email: req.body.email,
+    nickname: req.body.nickname,
+    password: req.body.password,
+
     salt: "",
   };
 
@@ -43,10 +37,8 @@ exports.singup = async (req: express.Request, res: express.Response) => {
 };
 
 exports.login = async (req: express.Request, res: express.Response) => {
-  // const email = req.body.email;
-  // const password = req.body.password;
-  const email = "sanghyuk1992@naver.com";
-  const password = "wjdtkdgur1";
+  const email = req.body.email;
+  const password = req.body.password;
   const result = await Users.findOne({ where: { email: email } });
 
   const hashPassword = createHmac("sha256", password)
@@ -87,6 +79,14 @@ exports.login = async (req: express.Request, res: express.Response) => {
 
     console.error(err);
   }
+};
+
+exports.logout = async (req, res) => {
+  res.cookie("user", "");
+  res.json({
+    message: CODES.S0001,
+    code: 1,
+  });
 };
 
 exports.findPassword = async (req, res) => {
