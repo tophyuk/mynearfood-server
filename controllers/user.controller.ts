@@ -29,7 +29,10 @@ exports.singup = async (req: express.Request, res: express.Response) => {
 
   try {
     const user = await Users.create(users)
-    res.send("sign-up success")
+    res.send({
+      code: 1,
+      message: CODES.S0101,
+    })
   } catch (err) {
     res.status(500).send({ message: err.message || "singup failure." })
     console.error(err)
@@ -214,13 +217,13 @@ exports.checkEmail = async (req, res) => {
 
   if (result) {
     res.send({
-      code: 1,
+      code: 0,
       message: CODES.F0101,
     })
   }
 
   res.send({
-    code: 0,
+    code: 1,
     message: CODES.S0001,
   })
 }
@@ -232,12 +235,12 @@ exports.checkNickname = async (req, res) => {
 
   if (result) {
     res.send({
-      code: 1,
+      code: 0,
       message: CODES.F0102,
     })
   }
   res.send({
-    code: 0,
+    code: 1,
     message: CODES.S0001,
   })
 }
