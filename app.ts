@@ -5,6 +5,7 @@ const cors = require("cors")
 
 const corsOptions = {
   origin: "http://localhost:9001",
+  credentials: true,
 }
 
 app.use(cors(corsOptions))
