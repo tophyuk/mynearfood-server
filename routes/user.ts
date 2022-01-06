@@ -10,9 +10,7 @@ router.get("/findPassword", users.findPassword)
 router.get("/checkEmail", users.checkEmail)
 router.get("/checkNickname", users.checkNickname)
 
-// Create a new Tutorial
-router.get("/", users.findAll)
-
+router.get("/:email", users.findUserByEmail)
 router.get("/:id", users.findOne)
 router.put("/:id", users.update)
 router.delete("/:id", users.delete)

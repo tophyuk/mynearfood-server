@@ -114,19 +114,28 @@ exports.findPassword = async (req, res) => {
     .catch((err) => {})
 }
 
-exports.findAll = async (req, res) => {
-  const email = "sanghyuk1992@naver.com"
-  let condition = { where: { email: email } }
+exports.findUserByEmail = async (req, res) => {
+  const email = req.params.email
+  const condition = { where: { email } }
 
-  Users.findAll(condition)
-    .then((data) => {
-      res.send(data)
+  const user = await Users.findOne(condition)
+
+  if (user.id) {
+    res.json({
+      message: "success",
+      code: "202",
+      user: {
+        id: user.id,
+        email: user.email,
+        nickname: user.nickname,
+      },
     })
-    .catch((err) => {
-      res
-        .status(500)
-        .send({ message: err.message || "Retrieve all tutorials failure." })
+  } else {
+    res.json({
+      message: "fail",
+      code: "400",
     })
+  }
 }
 
 exports.findOne = (req, res) => {
@@ -151,7 +160,7 @@ exports.verifyToken = (req, res, next) => {
     console.log("Clie :", splitToken[1])
 
     const decoded = jwt.verify(splitToken[1], YOUR_SECRET_KEY)
-    // console.log(decoded);
+    // console.log(decoded)
     if (decoded) {
       res.locals.email = decoded.email
       res.send(res.locals.email)
