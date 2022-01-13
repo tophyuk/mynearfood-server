@@ -37,7 +37,8 @@
     "nodemon": "npx nodemon app.ts",
     "test": "jest --forceExit --runInBand",
     "create_db": "ts-node ./migration/create-table/1.create-table-users.ts",
-    "create_db2": "ts-node ./migration/create-table/2.create-table-profile.ts"
+    "create_db2": "ts-node ./migration/create-table/2.create-table-profile.ts",
+    "create_db3": "ts-node ./migration/create-table/3.create-table-token.ts"
   },
   "author": "",
   "license": "ISC"
